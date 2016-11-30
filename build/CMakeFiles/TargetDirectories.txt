@@ -1,1 +1,0 @@
-/home/zi/facon/build/CMakeFiles/facon.dir

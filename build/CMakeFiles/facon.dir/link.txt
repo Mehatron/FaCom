@@ -1,1 +1,0 @@
-/usr/bin/cc  -fPIC   -shared -Wl,-soname,libfacon.so -o libfacon.so CMakeFiles/facon.dir/src/test.c.o 
