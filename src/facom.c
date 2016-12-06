@@ -167,8 +167,8 @@ int FACOM_setBaudRate(int baudRate)
             break;
     }
 
-    tcsetispeed(&portOptions, baud);
-    tcsetospeed(&portOptions, baud);
+    cfsetispeed(&portOptions, baud);
+    cfsetospeed(&portOptions, baud);
 
     if(tcsetattr(fd, TCSANOW, &portOptions) < 0)
         return ERROR_SET_PORT_OPTIONS;
