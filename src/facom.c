@@ -32,6 +32,15 @@ int FACOM_open(const char *port)
     if(tcsetattr(fd, TCSANOW, &portOptions) < 0)
         return ERROR_SET_PORT_OPTIONS;
 
+    if(FACOM_setDataBits(DATA_BITS_8) < 0)
+        return ERROR_SET_DATA_BITS;
+    if(FACOM_setStopBits(STOP_BITS_1) < 0)
+        return ERROR_SET_STOP_BITS;
+    if(FACOM_setParity(PARITY_EVEN) < 0)
+        return ERROR_SET_PARITY;
+    if(FACOM_setBaudRate(BAUD_9600) < 0)
+        return ERROR_SET_BAUD_RATE;
+
     return SUCCESS;
 }
 
@@ -122,7 +131,7 @@ int FACOM_setParity(int parity)
  */
 int FACOM_setStopBits(int stopBits)
 {
-    if(stopBits != STOP_BITS_1 ||
+    if(stopBits != STOP_BITS_1 &&
        stopBits != STOP_BITS_2)
         return ERROR_WRONG_PARAMETERS;
 

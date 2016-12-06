@@ -15,6 +15,11 @@ extern "C" {
 #define ERROR_GET_PORT_OPTIONS        -53
 #define ERROR_SET_PORT_OPTIONS        -54
 
+#define ERROR_SET_DATA_BITS           -61
+#define ERROR_SET_STOP_BITS           -62   
+#define ERROR_SET_PARITY              -63
+#define ERROR_SET_BAUD_RATE           -64
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
