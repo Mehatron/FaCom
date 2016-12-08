@@ -6,6 +6,7 @@ project(facom)
 # Project source code
 set(SOURCES
     src/facom.c
+    src/private.c
 )
 
 # Configuration
