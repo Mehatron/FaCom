@@ -23,7 +23,7 @@ extern void FACOM_intToString(int number, char *str);
 /*
  * Cast hexadecimal digit to character
  */
-extern void FACOM_hexToString(unsigned char number, char *str);
+extern void FACOM_intToHexString(unsigned char number, char *str);
 
 #ifdef __cplusplus
 }

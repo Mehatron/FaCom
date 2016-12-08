@@ -15,7 +15,7 @@ void FACOM_intToString(int number, char *str)
     *str = '\0';
 }
 
-void FACOM_hexToString(unsigned char number, char *str)
+void FACOM_intToHexString(unsigned char number, char *str)
 {
     unsigned char i;
 
