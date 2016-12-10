@@ -3,8 +3,12 @@
 #include <unistd.h>     // UNIX standard functions
 #include <fcntl.h>      // File controle definitions
 #include <termios.h>    // Terminal input/output stream
+#include <string.h>     // Work with strings
+
+#include <stdio.h>      // Only for debug propose
 
 #include "error.h"
+#include "private.h"
 
 /*
  * Global variables
@@ -29,6 +33,11 @@ int FACOM_open(const char *port)
     if(tcgetattr(fd, &portOptions) < 0)
         return ERROR_GET_PORT_OPTIONS;
     portOptions.c_cflag |= (CLOCAL | CREAD); // Default parameters (must be set)
+    portOptions.c_cflag &= ~(CRTSCTS);
+    portOptions.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+    portOptions.c_iflag |=  (INPCK | ISTRIP);
+    portOptions.c_iflag &= ~(IXON | IXOFF | IXANY);
+    portOptions.c_oflag &= ~(OPOST);
     if(tcsetattr(fd, TCSANOW, &portOptions) < 0)
         return ERROR_SET_PORT_OPTIONS;
 
@@ -183,5 +192,56 @@ int FACOM_setBaudRate(int baudRate)
         return ERROR_SET_PORT_OPTIONS;
 
     return SUCCESS;
+}
+
+/*
+ * Set discrete
+ */
+int FACOM_setDiscrete(const char *address, int action)
+{
+    if(strlen(address) != 5 ||
+       action < 0 || action > 4)
+        return ERROR_WRONG_PARAMETERS;
+
+    char msg[15];
+
+    msg[0] = STX;   // Start of text
+    msg[1] = '0';   // Station
+    msg[2] = '1';   // number
+    msg[3] = '4';   // Command
+    msg[4] = '2';   // code
+    msg[5] = digToChar(action);
+
+    size_t i;
+    for(i = 6; *address != '\0'; address++, i++)
+        msg[i] = *address;
+    msg[i] = '\0';
+
+    unsigned char checksum = FACOM_checksum(msg, strlen(msg));
+    FACOM_intToHexString(checksum, &msg[i++]);
+
+    msg[13] = ETX;  // End of message
+    msg[14] = '\0';
+
+    if(write(fd, msg, 15) < 0)
+        return ERROR_SENDING_DATA;
+
+    printf("%s\n", msg);
+    return SUCCESS;
+}
+
+/*
+ * Checksum of message
+ */
+unsigned char FACOM_checksum(const char *message, int msgLength)
+{
+    unsigned char sum = 0;
+    size_t i;
+
+    for(i = 0; i < msgLength; i++)
+        sum = (sum + message[i]) & 0xFF;
+    sum = (((sum ^ 0xFF) + 1) & 0xFF);
+
+    return sum;
 }
 

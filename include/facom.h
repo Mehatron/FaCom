@@ -21,6 +21,14 @@ extern "C" {
 #define BAUD_9600       9600
 #define BAUD_19200      19200
 
+#define STX             0x02
+#define ETX             0x03
+
+#define ACTION_DISABLE  1
+#define ACTION_ENABLE   2
+#define ACTION_SET      3
+#define ACTION_RESET    4
+
 /*
  * Open connection to PLC
  */
@@ -50,6 +58,16 @@ extern int FACOM_setStopBits(int stopBits);
  * Set baud rate for connection
  */
 extern int FACOM_setBaudRate(int baudRate);
+
+/*
+ * Set discrete
+ */
+extern int FACOM_setDiscrete(const char *address, int action);
+
+/*
+ * Checksum of message
+ */
+extern unsigned char FACOM_checksum(const char *message, int msgLength);
 
 #ifdef __cplusplus
 }

@@ -20,6 +20,8 @@ extern "C" {
 #define ERROR_SET_PARITY              -63
 #define ERROR_SET_BAUD_RATE           -64
 
+#define ERROR_SENDING_DATA            -71
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
