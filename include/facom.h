@@ -65,9 +65,14 @@ extern int FACOM_setBaudRate(int baudRate);
 extern unsigned char FACOM_checksum(const char *message, int msgLength);
 
 /*
- * Send data to facom PLC
+ * Send data to Fatek PLC
  */
 extern int FACOM_write(const char *data);
+
+/*
+ * Read data from Fatek PLC
+ */
+extern int FACOM_read(char *data, unsigned int bufferSize);
 
 /*
  * Set discrete

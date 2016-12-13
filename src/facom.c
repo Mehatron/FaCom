@@ -210,7 +210,7 @@ unsigned char FACOM_checksum(const char *message, int msgLength)
 }
 
 /*
- * Send data to PLC
+ * Send data to Fatek PLC
  */
 int FACOM_write(const char *data)
 {
@@ -237,6 +237,26 @@ int FACOM_write(const char *data)
     free(msg);
 
     return error;
+}
+
+/*
+ * Read data from Fatek PLC
+ */
+int FACOM_read(char *data, unsigned int bufferSize)
+{
+    unsigned int i = 0;
+    while(1)
+    {
+        char ch;
+        if(read(fd, &ch, 1) < 0)
+            continue;
+
+        data[i++] = ch;
+        if(ch == ETX || i >= bufferSize)
+            break;
+    }
+
+    return i;
 }
 
 /*
