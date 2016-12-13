@@ -74,11 +74,6 @@ extern int FACOM_write(const char *data);
  */
 extern int FACOM_read(char *data, unsigned int bufferSize);
 
-/*
- * Set discrete
- */
-extern int FACOM_setDiscrete(const char *address, int action);
-
 #ifdef __cplusplus
 }
 #endif // __cplusplus
