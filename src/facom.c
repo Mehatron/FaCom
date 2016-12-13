@@ -15,11 +15,12 @@
  * Global variables
  */
 int fd;
+char station[2];
 
 /*
  * Open connection to PLC
  */
-int FACOM_open(const char *port)
+int FACOM_open(const char *port, unsigned char stationNumber)
 {
     fd = open(port, O_RDWR | O_NOCTTY | O_NDELAY);
     if(fd < 0)
@@ -50,6 +51,8 @@ int FACOM_open(const char *port)
         return ERROR_SET_PARITY;
     if(FACOM_setBaudRate(BAUD_9600) < 0)
         return ERROR_SET_BAUD_RATE;
+
+    FACOM_intToHexString(stationNumber, station);
 
     return SUCCESS;
 }

@@ -32,7 +32,7 @@ extern "C" {
 /*
  * Open connection to PLC
  */
-extern int FACOM_open(const char *port);
+extern int FACOM_open(const char *port, unsigned char stationNumber);
 
 /*
  * Close connection to PLC
