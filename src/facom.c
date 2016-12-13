@@ -4,6 +4,7 @@
 #include <fcntl.h>      // File controle definitions
 #include <termios.h>    // Terminal input/output stream
 #include <string.h>     // Work with strings
+#include <stdlib.h>     // Standard functions (memorry managment)
 
 #include <stdio.h>      // Only for debug propose
 
@@ -195,6 +196,50 @@ int FACOM_setBaudRate(int baudRate)
 }
 
 /*
+ * Checksum of message
+ */
+unsigned char FACOM_checksum(const char *message, int msgLength)
+{
+    unsigned char sum = 0;
+    size_t i;
+
+    for(i = 0; i < msgLength; i++)
+        sum = (sum + message[i]) & 0xFF;
+
+    return sum;
+}
+
+/*
+ * Send data to PLC
+ */
+int FACOM_write(const char *data)
+{
+    int error = SUCCESS;
+
+    int count = strlen(data);
+    char *msg = malloc(count + 4);
+    if(msg == NULL)
+        return ERROR_MEMORRY_ALLOCATION;
+
+    msg[0] = STX;
+    size_t i;
+    for(i = 0; i < count; i++)
+        msg[i + 1] = data[i];
+
+    unsigned char checksum = FACOM_checksum(msg, count + 1);
+    FACOM_intToHexString(checksum, &msg[count + 1]);
+    msg[count + 3] = ETX;
+
+    if(write(fd, msg, count + 3) < 0)
+        error = ERROR_SENDING_DATA;
+
+    msg[count + 3] = '\0';
+    free(msg);
+
+    return error;
+}
+
+/*
  * Set discrete
  */
 int FACOM_setDiscrete(const char *address, int action)
@@ -223,25 +268,16 @@ int FACOM_setDiscrete(const char *address, int action)
     msg[13] = ETX;  // End of message
     msg[14] = '\0';
 
+    char test[] = " 01411 ";
+    test[0] = STX;
+    test[strlen(test) - 1] = ETX;
+    write(fd, test, strlen(test));
+    return SUCCESS;
+
     if(write(fd, msg, 15) < 0)
         return ERROR_SENDING_DATA;
 
     printf("%s\n", msg);
     return SUCCESS;
-}
-
-/*
- * Checksum of message
- */
-unsigned char FACOM_checksum(const char *message, int msgLength)
-{
-    unsigned char sum = 0;
-    size_t i;
-
-    for(i = 0; i < msgLength; i++)
-        sum = (sum + message[i]) & 0xFF;
-    sum = (((sum ^ 0xFF) + 1) & 0xFF);
-
-    return sum;
 }
 

@@ -9,6 +9,7 @@ extern "C" {
 #define ERROR                          -1
 
 #define ERROR_WRONG_PARAMETERS         -2
+#define ERROR_MEMORRY_ALLOCATION       -3
 
 #define ERROR_OPEN_PORT               -51
 #define ERROR_CLOSE_PORT              -52

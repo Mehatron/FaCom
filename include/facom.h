@@ -60,14 +60,19 @@ extern int FACOM_setStopBits(int stopBits);
 extern int FACOM_setBaudRate(int baudRate);
 
 /*
- * Set discrete
- */
-extern int FACOM_setDiscrete(const char *address, int action);
-
-/*
  * Checksum of message
  */
 extern unsigned char FACOM_checksum(const char *message, int msgLength);
+
+/*
+ * Send data to facom PLC
+ */
+extern int FACOM_write(const char *data);
+
+/*
+ * Set discrete
+ */
+extern int FACOM_setDiscrete(const char *address, int action);
 
 #ifdef __cplusplus
 }
