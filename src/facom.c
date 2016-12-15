@@ -351,10 +351,22 @@ int FACOM_setDiscrete(unsigned char discreteType,
             return ERROR_WRONG_PARAMETERS;
     }
 
-    char command[8];
+    char command[9];
     command[0] = '4';
     command[1] = '2';
     FACOM_intToString(action, &command[2]);
     command[3] = type;
+
+    int numOfDigits = FACOM_numberOfDigits(discreteNumber);
+    size_t i;
+    for(i = 0; i < 4 - numOfDigits; i++)
+        command[i + 3] = '0';
+    FACOM_intToString(discreteNumber, &command[i + 3]);
+
+    int error = FACOM_write(command);
+    if(error < 0)
+        return error;
+
+    return FACOM_checkForErrors();
 }
 
