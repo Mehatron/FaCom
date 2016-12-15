@@ -22,6 +22,7 @@ extern "C" {
 #define ERROR_SET_BAUD_RATE           -64
 
 #define ERROR_SENDING_DATA            -71
+#define ERROR_RECIVEING_DATA          -72
 
 #define ERROR_FREE                    -0x50
 #define ERROR_ILLEGAL_VALUE           -0x52
