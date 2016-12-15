@@ -40,10 +40,12 @@ int FACOM_open(const char *port, unsigned char stationNumber)
     portOptions.c_iflag |=  (INPCK | ISTRIP);
     portOptions.c_iflag &= ~(IXON | IXOFF | IXANY);
     portOptions.c_oflag &= ~(OPOST);
+    portOptions.c_cc[VMIN] = 0;     // Read don't block
+    portOptions.c_cc[VTIME] = 5;    // Timeour for read 0.5s
     if(tcsetattr(fd, TCSANOW, &portOptions) < 0)
         return ERROR_SET_PORT_OPTIONS;
 
-    if(FACOM_setDataBits(DATA_BITS_8) < 0)
+    if(FACOM_setDataBits(DATA_BITS_7) < 0)
         return ERROR_SET_DATA_BITS;
     if(FACOM_setStopBits(STOP_BITS_1) < 0)
         return ERROR_SET_STOP_BITS;
@@ -233,10 +235,9 @@ int FACOM_write(const char *data)
     FACOM_intToHexString(checksum, &msg[count + 1]);
     msg[count + 3] = ETX;
 
-    if(write(fd, msg, count + 3) < 0)
+    if(write(fd, msg, count + 4) < count + 4)
         error = ERROR_SENDING_DATA;
 
-    msg[count + 3] = '\0';
     free(msg);
 
     return error;
