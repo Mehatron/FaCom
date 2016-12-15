@@ -222,20 +222,22 @@ int FACOM_write(const char *data)
     int error = SUCCESS;
 
     int count = strlen(data);
-    char *msg = malloc(count + 4);
+    char *msg = malloc(count + 6);
     if(msg == NULL)
         return ERROR_MEMORRY_ALLOCATION;
 
     msg[0] = STX;
+    msg[1] = station[0];
+    msg[2] = station[1];
     size_t i;
     for(i = 0; i < count; i++)
-        msg[i + 1] = data[i];
+        msg[i + 3] = data[i];
 
-    unsigned char checksum = FACOM_checksum(msg, count + 1);
-    FACOM_intToHexString(checksum, &msg[count + 1]);
-    msg[count + 3] = ETX;
+    unsigned char checksum = FACOM_checksum(msg, count + 3);
+    FACOM_intToHexString(checksum, &msg[count + 3]);
+    msg[count + 5] = ETX;
 
-    if(write(fd, msg, count + 4) < count + 4)
+    if(write(fd, msg, count + 6) < count + 6)
         error = ERROR_SENDING_DATA;
 
     free(msg);
@@ -251,6 +253,7 @@ int FACOM_read(char *data, unsigned int bufferSize)
     unsigned int i = 0;
     while(1)
     {
+        usleep(20000);
         char ch;
         if(read(fd, &ch, 1) < 0)
             continue;
@@ -261,5 +264,48 @@ int FACOM_read(char *data, unsigned int bufferSize)
     }
 
     return i;
+}
+
+/*
+ * Set mode of Facom PLC (on/off)
+ */
+int FACOM_run(unsigned char run)
+{
+    char command[3] = "41";
+    command[2] = run > 0 ? '1' : '0';
+
+    int error = FACOM_write(command);
+    if(error < 0)
+        return error;
+
+    char recived[10];
+    error = FACOM_read(recived, 9);
+    if(error < 9)
+        return error;
+
+    char err = recived[5];
+    if(err > '0')
+    {
+        return err == 'A' ?
+            ERROR_ILLEGAL_ADDRESS: err + ERROR_FREE;
+    }
+
+    return SUCCESS;
+}
+
+/*
+ * Start Fatek PLC (set run mode on)
+ */
+int FACOM_start(void)
+{
+    return FACOM_run(ACTION_ON);
+}
+
+/*
+ * Stop Fatek PLC (set run mode off)
+ */
+int FACOM_stop(void)
+{
+    return FACOM_run(ACTION_OFF);
 }
 

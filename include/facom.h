@@ -29,6 +29,9 @@ extern "C" {
 #define ACTION_SET      3
 #define ACTION_RESET    4
 
+#define ACTION_OFF      0
+#define ACTION_ON       1
+
 /*
  * Open connection to PLC
  */
@@ -73,6 +76,21 @@ extern int FACOM_write(const char *data);
  * Read data from Fatek PLC
  */
 extern int FACOM_read(char *data, unsigned int bufferSize);
+
+/*
+ * Set mode of Facom PLC (on/off)
+ */
+extern int FACOM_run(unsigned char run);
+
+/*
+ * Start Fatek PLC (set run mode on)
+ */
+extern int FACOM_start(void);
+
+/*
+ * Stop Fatek PLC (set run mode off)
+ */
+extern int FACOM_stop(void);
 
 #ifdef __cplusplus
 }
