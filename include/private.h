@@ -25,6 +25,11 @@ extern void FACOM_intToString(int number, char *str);
  */
 extern void FACOM_intToHexString(unsigned char number, char *str);
 
+/*
+ * Count number of digits in number (integer)
+ */
+extern int FACOM_numberOfDigits(int number);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

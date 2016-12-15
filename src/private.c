@@ -35,3 +35,15 @@ void FACOM_intToHexString(unsigned char number, char *str)
     *str = '\0';
 }
 
+/*
+ * Count number of digits in number (integer)
+ */
+int FACOM_numberOfDigits(int number)
+{
+    int numberOfDigits = 0;
+
+    for(numberOfDigits; number > 0; numberOfDigits++, number /= 10);
+
+    return numberOfDigits;
+}
+
