@@ -24,12 +24,28 @@ extern "C" {
 #define STX             0x02
 #define ETX             0x03
 
+/*
+ * Discrete types
+ */
+#define DISCRETE_X      1       // Input discrete
+#define DISCRETE_Y      2       // Output discrete
+#define DISCRETE_M      3       // Internal memory discrete
+#define DISCRETE_S      4       // Step discrete
+#define DISCRETE_T      5       // Timer discrete
+#define DISCRETE_C      6       // Counter discrete
+
+/*
+ * Discrete actions
+ */
 #define ACTION_DISABLE  1
 #define ACTION_ENABLE   2
 #define ACTION_SET      3
 #define ACTION_RESET    4
 
-#define ACTION_OFF      0
+/*
+ * PLC on/off actions
+ */
+#define ACTION_OFF      0       
 #define ACTION_ON       1
 
 /*
@@ -96,6 +112,13 @@ extern int FACOM_start(void);
  * Stop Fatek PLC (set run mode off)
  */
 extern int FACOM_stop(void);
+
+/*
+ * Control discrete 
+ */
+extern int FACOM_setDiscrete(unsigned char discreteType,
+                             int discreteNumber,
+                             unsigned char action);
 
 #ifdef __cplusplus
 }

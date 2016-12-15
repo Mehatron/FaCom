@@ -40,10 +40,8 @@ void FACOM_intToHexString(unsigned char number, char *str)
  */
 int FACOM_numberOfDigits(int number)
 {
-    int numberOfDigits = 0;
-
-    for(numberOfDigits; number > 0; numberOfDigits++, number /= 10);
-
+    int numberOfDigits;
+    for(numberOfDigits = 0; number > 0; numberOfDigits++, number /= 10);
     return numberOfDigits;
 }
 
