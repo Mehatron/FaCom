@@ -80,7 +80,7 @@ extern int FACOM_read(char *data, unsigned int bufferSize);
 /*
  * Check for error while set commands
  */
-extern int FACOM_checkError(void);
+extern int FACOM_checkForErrors(void);
 
 /*
  * Set mode of Facom PLC (on/off)
