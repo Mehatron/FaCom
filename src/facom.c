@@ -240,6 +240,8 @@ int FACOM_write(const char *data)
     if(write(fd, msg, count + 6) < count + 6)
         error = ERROR_SENDING_DATA;
 
+    msg[count + 5] = '\0';
+
     free(msg);
 
     return error;
@@ -360,8 +362,8 @@ int FACOM_setDiscrete(unsigned char discreteType,
     int numOfDigits = FACOM_numberOfDigits(discreteNumber);
     size_t i;
     for(i = 0; i < 4 - numOfDigits; i++)
-        command[i + 3] = '0';
-    FACOM_intToString(discreteNumber, &command[i + 3]);
+        command[i + 4] = '0';
+    FACOM_intToString(discreteNumber, &command[i + 4]);
 
     int error = FACOM_write(command);
     if(error < 0)
