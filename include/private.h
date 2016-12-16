@@ -30,6 +30,11 @@ extern void FACOM_intToHexString(unsigned char number, char *str);
  */
 extern int FACOM_numberOfDigits(int number);
 
+/*
+ * Check for error while set commands
+ */
+extern int FACOM_checkForErrors(void);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

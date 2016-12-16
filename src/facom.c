@@ -273,24 +273,6 @@ int FACOM_read(char *data, unsigned int bufferSize)
 }
 
 /*
- * Check for error while set commands
- */
-int FACOM_checkForErrors(void)
-{
-    char recived[10];
-    int bytesRecived = FACOM_read(recived, 9);
-    if(bytesRecived < 9)
-        return ERROR_RECIVEING_DATA;
-
-    char err = recived[5];
-    if(err > '0')
-        return err == 'A' ?
-            ERROR_ILLEGAL_ADDRESS : err + ERROR_FREE;
-
-    return SUCCESS;
-}
-
-/*
  * Set mode of Facom PLC (on/off)
  */
 int FACOM_run(unsigned char run)

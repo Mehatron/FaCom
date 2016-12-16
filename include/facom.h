@@ -94,11 +94,6 @@ extern int FACOM_write(const char *data);
 extern int FACOM_read(char *data, unsigned int bufferSize);
 
 /*
- * Check for error while set commands
- */
-extern int FACOM_checkForErrors(void);
-
-/*
  * Set mode of Facom PLC (on/off)
  */
 extern int FACOM_run(unsigned char run);

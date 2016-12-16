@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "error.h"
+#include "facom.h"
 
 void FACOM_intToString(int number, char *str)
 {
@@ -43,5 +44,23 @@ int FACOM_numberOfDigits(int number)
     int numberOfDigits;
     for(numberOfDigits = 0; number > 0; numberOfDigits++, number /= 10);
     return numberOfDigits;
+}
+
+/*
+ * Check for error while set commands
+ */
+int FACOM_checkForErrors(void)
+{
+    char recived[10];
+    int bytesRecived = FACOM_read(recived, 9);
+    if(bytesRecived < 9)
+        return ERROR_RECIVEING_DATA;
+
+    char err = recived[5];
+    if(err > '0')
+        return err == 'A' ?
+            ERROR_ILLEGAL_ADDRESS : err + ERROR_FREE;
+
+    return SUCCESS;
 }
 
