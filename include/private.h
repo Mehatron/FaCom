@@ -35,6 +35,13 @@ extern int FACOM_numberOfDigits(int number);
  */
 extern int FACOM_checkForErrors(void);
 
+/*
+ * Get discrete address (for sending to Fate PLC)
+ */
+extern int FACOM_getDiscreteAddress(unsigned char discreteType,
+                                    int discreteNumber,
+                                    char *address);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

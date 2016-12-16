@@ -64,3 +64,50 @@ int FACOM_checkForErrors(void)
     return SUCCESS;
 }
 
+/*
+ * Get discrete address (for sending to Fate PLC)
+ */
+int FACOM_getDiscreteAddress(unsigned char discreteType,
+                             int discreteNumber,
+                             char *address)
+{
+    if(discreteNumber < 0 || discreteNumber > 9999 ||
+       address == NULL)
+        return ERROR_WRONG_PARAMETERS;
+
+    char type;
+    switch(discreteType)
+    {
+        case DISCRETE_X:
+            type = 'X';
+            break;
+        case DISCRETE_Y:
+            type = 'Y';
+            break;
+        case DISCRETE_M:
+            type = 'M';
+            break;
+        case DISCRETE_S:
+            type = 'S';
+            break;
+        case DISCRETE_T:
+            type = 'T';
+            break;
+        case DISCRETE_C:
+            type = 'C';
+            break;
+        default:
+            return ERROR_WRONG_PARAMETERS;
+            break;
+    }
+    address[0] = type;
+
+    int numOfDigits = FACOM_numberOfDigits(discreteNumber);
+    size_t i;
+    for(i = 0; i < 4 - numOfDigits; i++)
+        address[i + 1] = '0';
+    FACOM_intToString(discreteNumber, &address[i + 1]);
+
+    return SUCCESS;
+}
+
