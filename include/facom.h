@@ -45,7 +45,7 @@ extern "C" {
 /*
  * PLC on/off actions
  */
-#define ACTION_OFF      0       
+#define ACTION_OFF      0
 #define ACTION_ON       1
 
 /*
@@ -114,10 +114,10 @@ extern int FACOM_start(void);
 extern int FACOM_stop(void);
 
 /*
- * Control discrete 
+ * Control discrete
  */
 extern int FACOM_setDiscrete(unsigned char discreteType,
-                             int discreteNumber,
+                             int discreteAddress,
                              unsigned char action);
 
 #ifdef __cplusplus

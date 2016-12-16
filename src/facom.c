@@ -7,6 +7,7 @@
 #include <stdlib.h>     // Standard functions (memorry managment)
 
 #include <stdio.h>      // Only for debug propose
+#include <errno.h>      // Only for debug propose (for now)
 
 #include "error.h"
 #include "private.h"
@@ -26,7 +27,8 @@ int FACOM_open(const char *port, unsigned char stationNumber)
     if(fd < 0)
         return ERROR_OPEN_PORT;
 
-    fcntl(fd, F_SETFL, FNDELAY);    // Disable wainig when read from port
+    //fcntl(fd, F_SETFL, FNDELAY);    // Disable waiting when read from port
+    fcntl(fd, F_SETFL, 0);
 
     /*
      * Set default port parameters
@@ -40,7 +42,7 @@ int FACOM_open(const char *port, unsigned char stationNumber)
     portOptions.c_iflag |=  (INPCK | ISTRIP);
     portOptions.c_iflag &= ~(IXON | IXOFF | IXANY);
     portOptions.c_oflag &= ~(OPOST);
-    portOptions.c_cc[VMIN] = 0;     // Read don't block
+    portOptions.c_cc[VMIN] = 1;     // Read don't block
     portOptions.c_cc[VTIME] = 5;    // Timeour for read 0.5s
     if(tcsetattr(fd, TCSANOW, &portOptions) < 0)
         return ERROR_SET_PORT_OPTIONS;
@@ -64,6 +66,7 @@ int FACOM_open(const char *port, unsigned char stationNumber)
  */
 int FACOM_close(void)
 {
+    fcntl(fd, F_SETFL, 0);          // Reset default behaviour for port
     if(close(fd) < 0)
         return ERROR_CLOSE_PORT;
 
@@ -240,8 +243,6 @@ int FACOM_write(const char *data)
     if(write(fd, msg, count + 6) < count + 6)
         error = ERROR_SENDING_DATA;
 
-    msg[count + 5] = '\0';
-
     free(msg);
 
     return error;
@@ -258,7 +259,10 @@ int FACOM_read(char *data, unsigned int bufferSize)
         usleep(20000);
         char ch;
         if(read(fd, &ch, 1) < 0)
+        {
+            printf("%s\n", strerror(errno));
             continue;
+        }
 
         data[i++] = ch;
         if(ch == ETX || i >= bufferSize)
@@ -291,13 +295,14 @@ int FACOM_checkForErrors(void)
  */
 int FACOM_run(unsigned char run)
 {
-    char command[3] = "41";
-    command[2] = run > 0 ? '1' : '0';
+    char command[4] = "410";
+    if(run > 0)
+        command[2] = '1';
 
     int error = FACOM_write(command);
     if(error < 0)
         return error;
-
+    
     return FACOM_checkForErrors();
 }
 
@@ -318,13 +323,13 @@ int FACOM_stop(void)
 }
 
 /*
- * Control discrete 
+ * Control discrete
  */
 int FACOM_setDiscrete(unsigned char discreteType,
-                      int discreteNumber,
+                      int discreteAddress,
                       unsigned char action)
 {
-    if(discreteNumber < 0 || discreteNumber > 9999 ||
+    if(discreteAddress < 0 || discreteAddress > 9999 ||
        action < ACTION_DISABLE || action > ACTION_RESET)
         return ERROR_WRONG_PARAMETERS;
 
@@ -359,11 +364,11 @@ int FACOM_setDiscrete(unsigned char discreteType,
     FACOM_intToString(action, &command[2]);
     command[3] = type;
 
-    int numOfDigits = FACOM_numberOfDigits(discreteNumber);
+    int numOfDigits = FACOM_numberOfDigits(discreteAddress);
     size_t i;
     for(i = 0; i < 4 - numOfDigits; i++)
         command[i + 4] = '0';
-    FACOM_intToString(discreteNumber, &command[i + 4]);
+    FACOM_intToString(discreteAddress, &command[i + 4]);
 
     int error = FACOM_write(command);
     if(error < 0)
