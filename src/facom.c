@@ -360,6 +360,40 @@ int FACOM_setDiscrete(unsigned char discreteType,
 }
 
 /*
+ * Set multiple status of continuous discrete
+ */
+int FACOM_setDiscretes(unsigned char discreteType,
+                       int discreteNumber,
+                       unsigned char discreteCount,
+                       unsigned char *data)
+{
+    int error;
+    int count = discreteCount == 0 ? 256 : discreteCount;
+
+    char command[10 + count];
+    error = FACOM_getDiscreteAddress(discreteType,
+                                     discreteNumber,
+                                     &command[4]);
+    if(error < 0)
+        return error;
+
+    command[0] = '4';
+    command[1] = '5';
+    FACOM_intToHexString(discreteCount, &command[2]);
+
+    size_t i;
+    for(i = 0; i < count; i++)
+        command[4 + i] = data[i] > '0' ? '1' : '0';
+    command[9 + count] = '\0';
+
+    error = FACOM_write(command);
+    if(error < 0)
+        return error;
+
+    return FACOM_checkForErrors();
+}
+
+/*
  * Read continuous discrete state
  */
 int FACOM_getDiscretes(unsigned char discreteType,
@@ -379,7 +413,7 @@ int FACOM_getDiscretes(unsigned char discreteType,
 
     command[0] = '4';
     command[1] = '5';
-    FACOM_intToHexString(count, &command[2]);
+    FACOM_intToHexString(discreteCount, &command[2]);
     command[9] = '\0';
 
     error = FACOM_write(command);

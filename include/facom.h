@@ -116,6 +116,14 @@ extern int FACOM_setDiscrete(unsigned char discreteType,
                              unsigned char action);
 
 /*
+ * Set multiple status of continuous discrete
+ */
+extern int FACOM_setDiscretes(unsigned char discreteType,
+                              int discreteNumber,
+                              unsigned char discreteCount,
+                              unsigned char *data);
+
+/*
  * Read continuous discrete state
  */
 extern int FACOM_getDiscretes(unsigned char discreteType,
