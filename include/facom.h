@@ -112,8 +112,16 @@ extern int FACOM_stop(void);
  * Control discrete
  */
 extern int FACOM_setDiscrete(unsigned char discreteType,
-                             int discreteAddress,
+                             int discreteNumber,
                              unsigned char action);
+
+/*
+ * Read continuous discrete state
+ */
+extern int FACOM_getDiscretes(unsigned char discreteType,
+                              int discreteNumber,
+                              unsigned char discreteCount,
+                              unsigned char *data);
 
 #ifdef __cplusplus
 }

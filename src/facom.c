@@ -308,10 +308,10 @@ int FACOM_stop(void)
  * Control discrete
  */
 int FACOM_setDiscrete(unsigned char discreteType,
-                      int discreteAddress,
+                      int discreteNumber,
                       unsigned char action)
 {
-    if(discreteAddress < 0 || discreteAddress > 9999 ||
+    if(discreteNumber < 0 || discreteNumber > 9999 ||
        action < ACTION_DISABLE || action > ACTION_RESET)
         return ERROR_WRONG_PARAMETERS;
 
@@ -346,16 +346,56 @@ int FACOM_setDiscrete(unsigned char discreteType,
     FACOM_intToString(action, &command[2]);
     command[3] = type;
 
-    int numOfDigits = FACOM_numberOfDigits(discreteAddress);
+    int numOfDigits = FACOM_numberOfDigits(discreteNumber);
     size_t i;
     for(i = 0; i < 4 - numOfDigits; i++)
         command[i + 4] = '0';
-    FACOM_intToString(discreteAddress, &command[i + 4]);
+    FACOM_intToString(discreteNumber, &command[i + 4]);
 
     int error = FACOM_write(command);
     if(error < 0)
         return error;
 
     return FACOM_checkForErrors();
+}
+
+/*
+ * Read continuous discrete state
+ */
+int FACOM_getDiscretes(unsigned char discreteType,
+                       int discreteNumber,
+                       unsigned char discreteCount,
+                       unsigned char *data)
+{
+    int error;
+    int count = discreteCount == 0 ? 256 : discreteCount;
+
+    char command[10];
+    error = FACOM_getDiscreteAddress(discreteType,
+                                     discreteNumber,
+                                     &command[4]);
+    if(error < 0)
+        return error;
+
+    command[0] = '4';
+    command[1] = '5';
+    FACOM_intToHexString(count, &command[2]);
+    command[9] = '\0';
+
+    error = FACOM_write(command);
+    if(error < 0)
+        return error;
+
+    char recived[count + 9];
+
+    if(recived[5] > '0')
+        return recived[5] == 'A' ?
+            ERROR_ILLEGAL_ADDRESS : recived[5] + ERROR_FREE;
+
+    size_t i;
+    for(i = 0; i < count; i++)
+        data[i] = recived[i + 6];
+
+    return SUCCESS;
 }
 
