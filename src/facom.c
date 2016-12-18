@@ -227,7 +227,7 @@ int FACOM_write(const char *data)
     int count = strlen(data);
     char *msg = malloc(count + 6);
     if(msg == NULL)
-        return ERROR_MEMORRY_ALLOCATION;
+        return ERROR_MEMORY_ALLOCATION;
 
     msg[0] = STX;
     msg[1] = station[0];
@@ -424,7 +424,7 @@ int FACOM_getDiscretes(unsigned char discreteType,
 
     if(recived[5] > '0')
         return recived[5] == 'A' ?
-            ERROR_ILLEGAL_ADDRESS : recived[5] + ERROR_FREE;
+            ERROR_ILLEGAL_ADDRESS : recived[5] - ERROR_FREE;
 
     size_t i;
     for(i = 0; i < count; i++)
