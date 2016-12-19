@@ -371,6 +371,8 @@ int FACOM_setDiscretes(unsigned char discreteType,
     int count = discreteCount == 0 ? 256 : discreteCount;
 
     char command[10 + count];
+
+    FACOM_intToHexString(discreteCount, &command[2]);
     error = FACOM_getDiscreteAddress(discreteType,
                                      discreteNumber,
                                      &command[4]);
@@ -379,11 +381,10 @@ int FACOM_setDiscretes(unsigned char discreteType,
 
     command[0] = '4';
     command[1] = '5';
-    FACOM_intToHexString(discreteCount, &command[2]);
 
     size_t i;
     for(i = 0; i < count; i++)
-        command[4 + i] = data[i] > 0 ? 1 : 0;
+        command[9 + i] = data[i] > 0 ? '1' : '0';
     command[9 + count] = '\0';
 
     error = FACOM_write(command);
