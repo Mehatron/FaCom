@@ -383,7 +383,7 @@ int FACOM_setDiscretes(unsigned char discreteType,
 
     size_t i;
     for(i = 0; i < count; i++)
-        command[4 + i] = data[i] > '0' ? '1' : '0';
+        command[4 + i] = data[i] > 0 ? 1 : 0;
     command[9 + count] = '\0';
 
     error = FACOM_write(command);
@@ -428,7 +428,7 @@ int FACOM_getDiscretes(unsigned char discreteType,
 
     size_t i;
     for(i = 0; i < count; i++)
-        data[i] = recived[i + 6];
+        data[i] = recived[i + 6] - '0';
 
     return SUCCESS;
 }
