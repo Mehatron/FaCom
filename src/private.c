@@ -8,12 +8,13 @@
 void FACOM_intToString(int number, char *str)
 {
     size_t i = 0;
+    int numOfDigits = FACOM_numberOfDigits(number);
     while(number >  0)
     {
-        *(str++) = digToChar(number % 10);
+        str[numOfDigits - ++i] = digToChar(number % 10);
         number /= 10;
     }
-    *str = '\0';
+    str[numOfDigits] = '\0';
 }
 
 void FACOM_intToHexString(unsigned char number, char *str)
