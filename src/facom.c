@@ -315,42 +315,14 @@ int FACOM_setDiscrete(unsigned char discreteType,
        action < ACTION_DISABLE || action > ACTION_RESET)
         return ERROR_WRONG_PARAMETERS;
 
-    char type;
-    switch(discreteType)
-    {
-        case DISCRETE_X:
-            type = 'X';
-            break;
-        case DISCRETE_Y:
-            type = 'Y';
-            break;
-        case DISCRETE_M:
-            type = 'M';
-            break;
-        case DISCRETE_S:
-            type = 'S';
-            break;
-        case DISCRETE_T:
-            type = 'T';
-            break;
-        case DISCRETE_C:
-            type = 'C';
-            break;
-        default:
-            return ERROR_WRONG_PARAMETERS;
-    }
-
     char command[9];
     command[0] = '4';
     command[1] = '2';
     FACOM_intToString(action, &command[2]);
-    command[3] = type;
+
+    FACOM_getDiscreteAddress(discreteType, discreteNumber, &command[3]);
 
     int numOfDigits = FACOM_numberOfDigits(discreteNumber);
-    size_t i;
-    for(i = 0; i < 4 - numOfDigits; i++)
-        command[i + 4] = '0';
-    FACOM_intToString(discreteNumber, &command[i + 4]);
 
     int error = FACOM_write(command);
     if(error < 0)
