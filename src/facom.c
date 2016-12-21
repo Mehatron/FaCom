@@ -397,7 +397,7 @@ int FACOM_getDiscretes(unsigned char discreteType,
 
     if(recived[5] > '0')
         return recived[5] == 'A' ?
-            ERROR_ILLEGAL_ADDRESS : recived[5] - ERROR_FREE;
+            ERROR_ILLEGAL_ADDRESS : ERROR_FREE - recived[5];
 
     size_t i;
     for(i = 0; i < count; i++)

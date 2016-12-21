@@ -60,7 +60,7 @@ int FACOM_checkForErrors(void)
     char err = recived[5];
     if(err > '0')
         return err == 'A' ?
-            ERROR_ILLEGAL_ADDRESS : err - ERROR_FREE;
+            ERROR_ILLEGAL_ADDRESS : ERROR_FREE - err;
 
     return SUCCESS;
 }
