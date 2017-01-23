@@ -378,26 +378,27 @@ int FACOM_getDiscretes(unsigned char discreteType,
     int count = discreteCount == 0 ? 256 : discreteCount;
 
     char command[10];
+    command[0] = '4';
+    command[1] = '4';
+    FACOM_intToHexString(discreteCount, &command[2]);
     error = FACOM_getDiscreteAddress(discreteType,
                                      discreteNumber,
                                      &command[4]);
+    command[9] = '\0';
+
     if(error < 0)
         return error;
-
-    command[0] = '4';
-    command[1] = '5';
-    FACOM_intToHexString(discreteCount, &command[2]);
-    command[9] = '\0';
 
     error = FACOM_write(command);
     if(error < 0)
         return error;
 
-    char recived[count + 9];
+    char recived[count + 10];
+    FACOM_read(recived, count + 9);
 
     if(recived[5] > '0')
         return recived[5] == 'A' ?
-            ERROR_ILLEGAL_ADDRESS : ERROR_FREE - recived[5];
+            ERROR_ILLEGAL_ADDRESS : ERROR_FREE - recived[5] + '0';
 
     size_t i;
     for(i = 0; i < count; i++)

@@ -24,14 +24,14 @@ extern "C" {
 #define ERROR_SENDING_DATA            -71
 #define ERROR_RECIVEING_DATA          -72
 
-#define ERROR_FREE                    -0x50
-#define ERROR_ILLEGAL_VALUE           -0x52
-#define ERROR_ILLEGAL_FORMAT          -0x54
-#define ERROR_RUN_CHECKSUM            -0x55
-#define ERROR_RUN_ID                  -0x56
-#define ERROR_RUN_SYNTAX              -0x57
-#define ERROR_RUN_NOT_SUPPORTED       -0x58
-#define ERROR_ILLEGAL_ADDRESS         -0x5A
+#define ERROR_FREE                    -0x50     // -80
+#define ERROR_ILLEGAL_VALUE           -0x52     // -82
+#define ERROR_ILLEGAL_FORMAT          -0x54     // -84
+#define ERROR_RUN_CHECKSUM            -0x55     // -85
+#define ERROR_RUN_ID                  -0x56     // -86
+#define ERROR_RUN_SYNTAX              -0x57     // -87
+#define ERROR_RUN_NOT_SUPPORTED       -0x58     // -88
+#define ERROR_ILLEGAL_ADDRESS         -0x5A     // -90
 
 #ifdef __cplusplus
 }
