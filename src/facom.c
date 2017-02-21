@@ -6,9 +6,6 @@
 #include <string.h>     // Work with strings
 #include <stdlib.h>     // Standard functions (memorry managment)
 
-#include <stdio.h>      // Only for debug propose
-#include <errno.h>      // Only for debug propose (for now)
-
 #include "error.h"
 #include "private.h"
 
@@ -259,10 +256,7 @@ int FACOM_read(char *data, unsigned int bufferSize)
         usleep(20000);
         char ch;
         if(read(fd, &ch, 1) < 0)
-        {
-            printf("%s\n", strerror(errno));
             continue;
-        }
 
         data[i++] = ch;
         if(ch == ETX || i >= bufferSize)
